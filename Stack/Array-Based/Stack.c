@@ -1,4 +1,4 @@
-#include "Stack.h"
+#include "../Stack.h"
 
 /*
  * Precondition: The stack is initialized
@@ -63,32 +63,7 @@ void Push(StackEntry e, Stack *ps)
     ps->entry[ps->top++] = e;
 }
 
-// int Push(StackEntry e, Stack *ps)
-// {
-//     if (ps->top == MAXSTACK) return 0;
-//     else
-//     {
-//         ps->entry[ps->top++] = e;
-//         return 1;
-//     }
-// }
-
 void CreateStack(Stack *ps)
 {
     ps->top = 0; // is the index of the first available place in the stack
 }
-
-// void ReverseRead(void)
-// {
-//     StackEntry item;
-//     Stack stack;
-//     CreateStack(&stack);
-//     while (!StackFull(&stack) && (item = getchar()) != '\n')
-//         Push(item, &stack);
-//     while (!StackEmpty(&stack))
-//     {
-//         Pop(&item, &stack);
-//         putchar(item);
-//     }
-//     putchar('\n');
-// }

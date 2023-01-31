@@ -12,6 +12,7 @@ int main()
     Stack s;
     int x;
     CreateStack(&s);
+
     if (!StackFull(&s))
     {
         Push(100, &s);
@@ -29,6 +30,21 @@ int main()
     return 0;
 }
 
+// void ReverseRead(void)
+// {
+//     StackEntry item;
+//     Stack stack;
+//     CreateStack(&stack);
+//     while (!StackFull(&stack) && (item = getchar()) != '\n')
+//         Push(item, &stack);
+//     while (!StackEmpty(&stack))
+//     {
+//         Pop(&item, &stack);
+//         putchar(item);
+//     }
+//     putchar('\n');
+// }
+
 /*
  * Information Hiding (Encapsulation)
  * WHAT - HOW
@@ -36,7 +52,7 @@ int main()
  *
  * Top-Down-Design !!!
  * The execution time, complexity, depends on n.!!!
- * 
+ *
  * Stack: LIFO
  * Type: is a set of values and a set of operations on those values
  * Sequence: is...
