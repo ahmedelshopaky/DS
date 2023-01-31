@@ -3,6 +3,37 @@
 
 /*
  * Pre: The stack exists
+ * Post: Returns the number of elements
+ */
+int StackSize(Stack *ps)
+{
+    /*
+     * Complexity is ϴ(1)
+     */
+    return ps->size;
+    
+    /*
+     * Complexity is ϴ(N)
+     */
+    // int x;
+    // StackNode *pn = ps->top;
+    // for (x = 0; pn; pn = pn->next)
+    //     x++;
+    // return x;
+}
+
+/*
+ * Pre: The stack exists
+ * Post: Function is passed to process every element
+ */
+void TraverseStack(Stack *ps, void (*pf)(StackEntry))
+{
+    for (StackNode *pn = ps->top; pn; pn = pn->next)
+        (*pf)(pn->entry);
+}
+
+/*
+ * Pre: The stack exists
  * Post: All the elements freed
  */
 void ClearStack(Stack *ps)
@@ -18,11 +49,13 @@ void ClearStack(Stack *ps)
         free(ps->top);
         ps->top = pn;
     }
+    ps->size = 0;
 }
 
 int StackFull(Stack *ps)
 {
     return 0;
+    // return ps->size >= MAXSTACK;
 }
 
 /*
@@ -50,6 +83,7 @@ void Pop(StackEntry *pe, Stack *ps)
     pn = ps->top;
     ps->top = ps->top->next;
     free(pn);
+    ps->size--;
 }
 
 /*
@@ -62,9 +96,11 @@ void Push(StackEntry e, Stack *ps)
     pn->entry = e;
     pn->next = ps->top;
     ps->top = pn;
+    ps->size++;
 }
 
 void CreateStack(Stack *ps)
 {
     (*ps).top = NULL;
+    (*ps).size = 0;
 }

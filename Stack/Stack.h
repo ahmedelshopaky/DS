@@ -22,6 +22,7 @@ typedef struct stacknode
 typedef struct stack
 {
     StackNode *top;
+    int size;
 } Stack;
 
 void TraverseStack(Stack *, void (*)(StackEntry));
