@@ -1,4 +1,4 @@
-#define ARRAY_BASED_QUEUE
+#define LINKED_BASED_QUEUE
 #define MAXQUEUE 100
 typedef int QueueEntry;
 
@@ -9,6 +9,21 @@ typedef struct queue
     int rear;
     int size;
     QueueEntry entry[MAXQUEUE];
+} Queue;
+#endif
+
+#ifdef LINKED_BASED_QUEUE
+typedef struct queuenode
+{
+    struct queuenode *next;
+    QueueEntry entry;
+} QueueNode;
+
+typedef struct queue
+{
+    QueueNode *front;
+    QueueNode *rear;
+    int size;
 } Queue;
 #endif
 
