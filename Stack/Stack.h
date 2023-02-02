@@ -1,18 +1,22 @@
+#define LINKED_BASED_STACK
 #define MAXSTACK 100
 typedef int StackEntry;
 
 /*
  * Array-Based Implementation
  */
-// typedef struct stack
-// {
-//     int top;
-//     StackEntry entry[MAXSTACK];
-// } Stack;
+#ifdef ARRAY_BASED_STACK
+typedef struct stack
+{
+    int top;
+    StackEntry entry[MAXSTACK];
+} Stack;
+#endif
 
 /*
  * Linked-Based Implementation
  */
+#ifdef LINKED_BASED_STACK
 typedef struct stacknode
 {
     StackEntry entry;
@@ -24,6 +28,7 @@ typedef struct stack
     StackNode *top;
     int size;
 } Stack;
+#endif
 
 void TraverseStack(Stack *, void (*)(StackEntry));
 void ClearStack(Stack *);

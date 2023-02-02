@@ -73,8 +73,8 @@ void MoveDisks(int count, int start, int finish, int temp)
 
 int main()
 {
-    MoveDisks(64, 1, 3, 2);
-    // TestStack();
+    // MoveDisks(64, 1, 3, 2);
+    TestStack();
     // ReverseRead();
     return 0;
 }
