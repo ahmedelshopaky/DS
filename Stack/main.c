@@ -1,5 +1,12 @@
+#include <math.h>
 #include <stdio.h>
 #include "Stack.h"
+
+#define POWER '^'
+#define MUL '*'
+#define DIV '/'
+#define PLUS '+'
+#define MINUS '-'
 
 void Display(StackEntry e)
 {
@@ -13,9 +20,9 @@ void TestStack()
     CreateStack(&s);
     if (!StackFull(&s))
     {
-        Push(100, &s);
-        Push(200, &s);
-        Push(300, &s);
+        Push(10, &s);
+        Push(20, &s);
+        Push(30, &s);
     }
     printf("stack size is: %d\n", StackSize(&s));
     TraverseStack(&s, &Display);
@@ -65,17 +72,195 @@ void MoveDisks(int count, int start, int finish, int temp)
      */
     if (count > 0)
     {
+        /*
+         * Tail Recursion: Last statement in a function is a call to itself
+         */
         MoveDisks(count - 1, start, temp, finish);
         printf("Move disk %d from %d to %d\n", count, start, finish);
         MoveDisks(count - 1, temp, finish, start);
     }
 }
 
+/*
+ * Removing Tail Recursion, To reduce stack consumption
+ */
+void Move(int count, int start, int finish, int temp)
+{
+    int swap;
+    while (count > 0)
+    {
+        MoveDisks(count - 1, start, temp, finish);
+        printf("Move disk %d from %d to %d\n", count, start, finish);
+        count--;
+        swap = start;
+        start = temp;
+        temp = swap;
+    }
+}
+
+double Factorial(int n)
+{
+    /*
+     * recursive algorithm
+     * Complexity is ϴ(N)
+     */
+    return n == 0
+               ? 1
+               : n * Factorial(n - 1);
+
+    /*
+     * iterative algorithm
+     * Complexity is ϴ(N)
+     */
+    double product;
+    for (product = 1; n >= 1; n--)
+        product *= n;
+    return product;
+    // int count;
+    // double product;
+    // for (count = 2, product = 1; count <= n; count++)
+    //     product *= count;
+    // return product;
+}
+
+/*
+ * Given a number n, print n-th Fibonacci Number.
+ */
+double Fibonacci(int n)
+{
+    /*
+     * iterative algorithm
+     * Complexity is ϴ(N)
+     */
+    int oneback, twoback, current;
+    if (n <= 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+    {
+        oneback = 1;
+        twoback = 0;
+        for (int i = 2; i <= n; i++)
+        {
+            current = oneback + twoback;
+            twoback = oneback;
+            oneback = current;
+        }
+        return current;
+    }
+
+    /*
+     * recursive algorithm
+     * Complexity is ϴ(C^N)
+     */
+    if (n <= 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+        return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+
+int IsDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+int Presedent(char op1, char op2)
+{
+    if (op1 == POWER)
+        return 1;
+    if (op1 == MUL || op1 == DIV)
+        return op2 != POWER;
+    if (op1 == PLUS || op1 == MINUS)
+        return op2 != POWER && op2 != MUL && op2 != DIV;
+}
+
+/*
+ * Polish Notaion.
+ * --- Example ---
+ * - Prefix:  +ab
+ * - Infix:   a+b
+ * - Postfix: ab+
+ */
+void InfixToPostfix(char infix[], char postfix[])
+{
+    int i, j;
+    char c, op;
+    Stack s;
+    CreateStack(&s);
+    for (i = 0, j = 0; (c = infix[i]) != '\0'; i++)
+        if (IsDigit(c))
+            postfix[j++] = c;
+        else
+        {
+            if (!StackEmpty(&s))
+            {
+                StackTop(&op, &s);
+                while (!StackEmpty(&s) && Presedent(op, c))
+                {
+                    Pop(&op, &s);
+                    postfix[j++] = op;
+                    if (!StackEmpty(&s))
+                        StackTop(&op, &s);
+                }
+            }
+            Push(c, &s);
+        }
+    while (!StackEmpty(&s))
+    {
+        Pop(&op, &s);
+        postfix[j++] = op;
+    }
+    postfix[j] = '\0';
+}
+
+double Oper(char c, double op1, double op2)
+{
+    switch (c)
+    {
+    case POWER:
+        return pow(op1, op2);
+    case PLUS:
+        return op1 + op2;
+    case MINUS:
+        return op1 - op2;
+    case MUL:
+        return op1 * op2;
+    case DIV:
+        return op1 / op2;
+    }
+}
+
+// double EvaluatePostfix(char expr[])
+// {
+//     char c;
+//     Stack s;
+//     double op1, op2, val;
+//     for (int i = 0; (c = expr[i]) != '\0'; i++)
+//         if (IsDigit(c))
+//             Push((double)(c - '0'), &s);
+//         else
+//         {
+//             Pop(&op2, &s);
+//             Pop(&op1, &s);
+//             val = Oper(c, op1, op2);
+//             // printf("%.2f %c %.2f = %.2f\n", op1, c, op2, val);
+//             Push(val, &s);
+//         }
+//     Pop(&val, &s);
+//     return val;
+// }
+
 int main()
 {
-    // MoveDisks(64, 1, 3, 2);
-    TestStack();
-    // ReverseRead();
+    // char infix[] = "1+2*3^4/5+6";
+    // char postfix[sizeof(infix)];
+    // InfixToPostfix(infix, postfix);
+    // printf("%s\n", postfix);
+
+    // printf("%.2f\n", EvaluatePostfix("1234^*5/+6+"));
     return 0;
 }
 

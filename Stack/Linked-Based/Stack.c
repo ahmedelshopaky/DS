@@ -15,11 +15,11 @@ int StackSize(Stack *ps)
     /*
      * Complexity is ϴ(N)
      */
-    // int x;
-    // StackNode *pn = ps->top;
-    // for (x = 0; pn; pn = pn->next)
-    //     x++;
-    // return x;
+    int x;
+    StackNode *pn = ps->top;
+    for (x = 0; pn; pn = pn->next)
+        x++;
+    return x;
 }
 
 /*

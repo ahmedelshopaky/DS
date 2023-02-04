@@ -1,6 +1,6 @@
 #define LINKED_BASED_STACK
 #define MAXSTACK 100
-typedef int StackEntry;
+typedef char StackEntry;
 
 /*
  * Array-Based Implementation
