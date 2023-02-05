@@ -5,7 +5,7 @@
 typedef struct customer
 {
     int id;
-    int model_year;
+    int age;
     char name[];
 } Customer;
 
