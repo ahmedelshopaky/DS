@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include "Stack.h"
 
-#define POWER '^'
+#define POW '^'
 #define MUL '*'
 #define DIV '/'
-#define PLUS '+'
-#define MINUS '-'
+#define ADD '+'
+#define SUB '-'
 
 void Display(StackEntry e)
 {
@@ -16,7 +16,7 @@ void Display(StackEntry e)
 void TestStack()
 {
     StackEntry e;
-    Stack s;
+    PStack s;
     CreateStack(&s);
     if (!StackFull(&s))
     {
@@ -43,7 +43,7 @@ void TestStack()
 void ReverseRead()
 {
     StackEntry item;
-    Stack stack;
+    PStack stack;
     CreateStack(&stack);
     while (!StackFull(&stack) && (item = getchar()) != '\n')
         Push(item, &stack);
@@ -167,30 +167,33 @@ int IsDigit(char c)
     return c >= '0' && c <= '9';
 }
 
-int Presedent(char op1, char op2)
+int Precedence(char op1, char op2)
 {
-    if (op1 == POWER)
+    if (op1 == POW)
         return 1;
     if (op1 == MUL || op1 == DIV)
-        return op2 != POWER;
-    if (op1 == PLUS || op1 == MINUS)
-        return op2 != POWER && op2 != MUL && op2 != DIV;
+        return op2 != POW;
+    if (op1 == ADD || op1 == SUB)
+        return op2 != POW && op2 != MUL && op2 != DIV;
 }
 
 /*
  * Polish Notaion.
+ * ---------------
  * --- Example ---
  * - Prefix:  +ab
  * - Infix:   a+b
  * - Postfix: ab+
+ * ---------------
  */
 void InfixToPostfix(char infix[], char postfix[])
 {
     int i, j;
     char c, op;
-    Stack s;
+    PStack s;
     CreateStack(&s);
     for (i = 0, j = 0; (c = infix[i]) != '\0'; i++)
+    {
         if (IsDigit(c))
             postfix[j++] = c;
         else
@@ -198,7 +201,7 @@ void InfixToPostfix(char infix[], char postfix[])
             if (!StackEmpty(&s))
             {
                 StackTop(&op, &s);
-                while (!StackEmpty(&s) && Presedent(op, c))
+                while (!StackEmpty(&s) && Precedence(op, c))
                 {
                     Pop(&op, &s);
                     postfix[j++] = op;
@@ -208,6 +211,7 @@ void InfixToPostfix(char infix[], char postfix[])
             }
             Push(c, &s);
         }
+    }
     while (!StackEmpty(&s))
     {
         Pop(&op, &s);
@@ -220,11 +224,11 @@ double Oper(char c, double op1, double op2)
 {
     switch (c)
     {
-    case POWER:
+    case POW:
         return pow(op1, op2);
-    case PLUS:
+    case ADD:
         return op1 + op2;
-    case MINUS:
+    case SUB:
         return op1 - op2;
     case MUL:
         return op1 * op2;
@@ -236,20 +240,23 @@ double Oper(char c, double op1, double op2)
 // double EvaluatePostfix(char expr[])
 // {
 //     char c;
-//     Stack s;
+//     PStack s;
 //     double op1, op2, val;
+//     CreateStack(&s);
 //     for (int i = 0; (c = expr[i]) != '\0'; i++)
+//     {
 //         if (IsDigit(c))
 //             Push((double)(c - '0'), &s);
 //         else
 //         {
-//             Pop(&op2, &s);
-//             Pop(&op1, &s);
+//             if (!StackEmpty(&s)) Pop(&op2, &s);
+//             if (!StackEmpty(&s)) Pop(&op1, &s);
 //             val = Oper(c, op1, op2);
 //             // printf("%.2f %c %.2f = %.2f\n", op1, c, op2, val);
-//             Push(val, &s);
+//             if (!StackFull(&s)) Push(val, &s);
 //         }
-//     Pop(&val, &s);
+//     }
+//     if (!StackEmpty(&s)) Pop(&val, &s);
 //     return val;
 // }
 
@@ -261,6 +268,7 @@ int main()
     // printf("%s\n", postfix);
 
     // printf("%.2f\n", EvaluatePostfix("1234^*5/+6+"));
+    TestStack();
     return 0;
 }
 

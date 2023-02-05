@@ -1,23 +1,40 @@
 #include <stdlib.h>
+#include <string.h>
 #include "Stack.h"
 
 #ifdef LINKED_BASED_STACK
+
+/*
+ * Linked-Based Implementation
+ */
+typedef struct stacknode
+{
+    StackEntry entry;
+    struct stacknode *next;
+} StackNode;
+
+typedef struct stack
+{
+    StackNode *top;
+    int size;
+} Stack;
+
 /*
  * Pre: The stack exists
  * Post: Returns the number of elements
  */
-int StackSize(Stack *ps)
+int StackSize(PStack *pps)
 {
     /*
      * Complexity is ϴ(1)
      */
-    return ps->size;
+    return (*pps)->size;
 
     /*
      * Complexity is ϴ(N)
      */
     int x;
-    StackNode *pn = ps->top;
+    StackNode *pn = (*pps)->top;
     for (x = 0; pn; pn = pn->next)
         x++;
     return x;
@@ -27,9 +44,9 @@ int StackSize(Stack *ps)
  * Pre: The stack exists
  * Post: Function is passed to process every element
  */
-void TraverseStack(Stack *ps, void (*pf)(StackEntry))
+void TraverseStack(PStack *pps, void (*pf)(StackEntry))
 {
-    for (StackNode *pn = ps->top; pn; pn = pn->next)
+    for (StackNode *pn = (*pps)->top; pn; pn = pn->next)
         (*pf)(pn->entry);
 }
 
@@ -37,61 +54,61 @@ void TraverseStack(Stack *ps, void (*pf)(StackEntry))
  * Pre: The stack exists
  * Post: All the elements freed
  */
-void ClearStack(Stack *ps)
+void ClearStack(PStack *pps)
 {
     /*
      * Complexity is ϴ(N)
      * Total time = N * one loop time
      */
-    StackNode *pn = ps->top;
+    StackNode *pn = (*pps)->top;
     while (pn)
     {
         pn = pn->next;
-        free(ps->top);
-        ps->top = pn;
+        free((*pps)->top);
+        (*pps)->top = pn;
     }
-    ps->size = 0;
+    (*pps)->size = 0;
 }
 
-int StackFull(Stack *ps)
+int StackFull(PStack *pps)
 {
     return 0;
-    // return ps->size >= MAXSTACK;
+    // return (*pps)->size >= MAXSTACK;
 }
 
 /*
  * Pre: The stack exists
  * Post: Returns the status, 1 or 0
  */
-int StackEmpty(Stack *ps)
+int StackEmpty(PStack *pps)
 {
-    return !ps->top;
+    return !(*pps)->top;
 }
 
-void StackTop(StackEntry *pe, Stack *ps)
+void StackTop(StackEntry *pe, PStack *pps)
 {
-    *pe = ps->top->entry;
+    *pe = (*pps)->top->entry;
 }
 
 /*
  * Pre: The stack exists and it is not empty
  * Post: The item at the top of the stack has been removed and returned
  */
-void Pop(StackEntry *pe, Stack *ps)
+void Pop(StackEntry *pe, PStack *pps)
 {
     StackNode *pn;
-    *pe = ps->top->entry;
-    pn = ps->top;
-    ps->top = ps->top->next;
+    *pe = (*pps)->top->entry;
+    pn = (*pps)->top;
+    (*pps)->top = (*pps)->top->next;
     free(pn);
-    ps->size--;
+    (*pps)->size--;
 }
 
 /*
  * Pre: The stack exists and is initialized
  * Post: The argument item has been stored at the top of the stack
  */
-int Push(StackEntry e, Stack *ps)
+int Push(StackEntry e, PStack *pps)
 {
     StackNode *pn = (StackNode *)malloc(sizeof(StackNode));
     if (!pn)
@@ -99,28 +116,40 @@ int Push(StackEntry e, Stack *ps)
     else
     {
         pn->entry = e;
-        pn->next = ps->top;
-        ps->top = pn;
-        ps->size++;
+        pn->next = (*pps)->top;
+        (*pps)->top = pn;
+        (*pps)->size++;
         return 1;
     }
 }
 
-void CreateStack(Stack *ps)
+void CreateStack(PStack *pps)
 {
-    (*ps).top = NULL;
-    (*ps).size = 0;
+    *pps = (Stack *)malloc(sizeof(Stack));
+    (*pps)->size = 0;
+    (*pps)->top = NULL;
 }
+
 #else
+
+/*
+ * Array-Based Implementation
+ */
+typedef struct stack
+{
+    int top;
+    StackEntry entry[MAXSTACK];
+    // void *entry[MAXSTACK];
+} Stack;
 
 /*
  * Precondition: The stack is initialized
  */
-void TraverseStack(Stack *ps, void (*pf)(StackEntry))
+void TraverseStack(PStack *pps, void (*pf)(StackEntry))
 {
-    for (int i = ps->top; i > 0; i--)
+    for (int i = (*pps)->top; i > 0; i--)
     {
-        (*pf)(ps->entry[i - 1]);
+        (*pf)((*pps)->entry[i - 1]);
     }
 }
 
@@ -128,42 +157,42 @@ void TraverseStack(Stack *ps, void (*pf)(StackEntry))
  * Pre: The stack is initialized
  * Post: Destroy all elements, the stack looks initialized.
  */
-void ClearStack(Stack *ps)
+void ClearStack(PStack *pps)
 {
-    ps->top = 0;
+    (*pps)->top = 0;
 }
 
-int StackSize(Stack *ps)
+int StackSize(PStack *pps)
 {
-    return ps->top;
+    return (*pps)->top;
 }
 
 /*
  * Pre: The stack is initialized and not empty
  * Post: The last elemnet in the stack is returned without destroy it
  */
-void StackTop(StackEntry *pe, Stack *ps)
+void StackTop(StackEntry *pe, PStack *pps)
 {
-    *pe = ps->entry[ps->top - 1];
+    *pe = (*pps)->entry[(*pps)->top - 1];
 }
 
-int StackEmpty(Stack *ps)
+int StackEmpty(PStack *pps)
 {
-    return !ps->top;
+    return !(*pps)->top;
 }
 
 /*
  * Pre: The stack is initialized and not empty
  * Post: The last element entered is returned
  */
-void Pop(StackEntry *pe, Stack *ps)
+void Pop(StackEntry *pe, PStack *pps)
 {
-    *pe = ps->entry[--(ps->top)];
+    *pe = (*pps)->entry[--((*pps)->top)];
 }
 
-int StackFull(Stack *ps)
+int StackFull(PStack *pps)
 {
-    return ps->top >= MAXSTACK;
+    return (*pps)->top >= MAXSTACK;
 }
 
 /*
@@ -171,14 +200,30 @@ int StackFull(Stack *ps)
  * The user has to check before calling Push
  * Post: The element e has been stored at the top of the stack
  */
-int Push(StackEntry e, Stack *ps)
+int Push(StackEntry e, PStack *pps)
 {
-    ps->entry[ps->top++] = e;
+    (*pps)->entry[(*pps)->top++] = e;
     return 1;
 }
 
-void CreateStack(Stack *ps)
+// int Push(void *, PStack *pps, int bytes)
+// {
+//     void *ptr = malloc(bytes);
+//     if (!ptr)
+//         return 0;
+//     else
+//     {
+//         memcpy(ptr, pe, bytes);
+//         (*pps)->entry[(*pps)->top] = ptr;
+//         (*pps)->top++;
+//         return 1;
+//     }
+// }
+
+void CreateStack(PStack *pps)
 {
-    ps->top = 0; // is the index of the first available place in the stack
+    *pps = (Stack *)malloc(sizeof(Stack));
+    (*pps)->top = 0; // is the index of the first available place in the stack
 }
+
 #endif

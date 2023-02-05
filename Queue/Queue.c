@@ -2,6 +2,7 @@
 #include "Queue.h"
 
 #ifdef LINKED_BASED_QUEUE
+
 void CreateQueue(Queue *pq)
 {
     pq->front = NULL;
@@ -62,7 +63,6 @@ void ClearQueue(Queue *pq)
         free(pq->front);
         pq->front = pq->rear;
     }
-
     pq->size = 0;
 }
 
@@ -71,6 +71,7 @@ void TraverseQueue(Queue *pq, void (*pf)(QueueEntry))
     for (QueueNode *pn = pq->front; pn; pn = pn->next)
         (*pf)(pn->entry);
 }
+
 #else
 
 void CreateQueue(Queue *pq)
@@ -126,4 +127,5 @@ void TraverseQueue(Queue *pq, void (*pf)(QueueEntry))
         pos = (pos + 1) % MAXQUEUE;
     }
 }
+
 #endif

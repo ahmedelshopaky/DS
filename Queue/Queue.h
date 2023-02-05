@@ -1,8 +1,8 @@
+#include "../Global.h"
 #define LINKED_BASED_QUEUE
-#define MAXQUEUE 100
-typedef int QueueEntry;
 
 #ifdef LINKED_BASED_QUEUE
+
 typedef struct queuenode
 {
     struct queuenode *next;
@@ -15,6 +15,7 @@ typedef struct queue
     QueueNode *rear;
     int size;
 } Queue;
+
 #else
 
 typedef struct queue
@@ -24,6 +25,7 @@ typedef struct queue
     int size;
     QueueEntry entry[MAXQUEUE];
 } Queue;
+
 #endif
 
 void CreateQueue(Queue *);
