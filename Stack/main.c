@@ -237,28 +237,28 @@ double Oper(char c, double op1, double op2)
     }
 }
 
-// double EvaluatePostfix(char expr[])
-// {
-//     char c;
-//     PStack s;
-//     double op1, op2, val;
-//     CreateStack(&s);
-//     for (int i = 0; (c = expr[i]) != '\0'; i++)
-//     {
-//         if (IsDigit(c))
-//             Push((double)(c - '0'), &s);
-//         else
-//         {
-//             if (!StackEmpty(&s)) Pop(&op2, &s);
-//             if (!StackEmpty(&s)) Pop(&op1, &s);
-//             val = Oper(c, op1, op2);
-//             // printf("%.2f %c %.2f = %.2f\n", op1, c, op2, val);
-//             if (!StackFull(&s)) Push(val, &s);
-//         }
-//     }
-//     if (!StackEmpty(&s)) Pop(&val, &s);
-//     return val;
-// }
+double EvaluatePostfix(char expr[])
+{
+    char c;
+    PStack s;
+    double op1, op2, val;
+    CreateStack(&s);
+    for (int i = 0; (c = expr[i]) != '\0'; i++)
+    {
+        if (IsDigit(c))
+            Push((double)(c - '0'), &s);
+        else
+        {
+            if (!StackEmpty(&s)) Pop(&op2, &s);
+            if (!StackEmpty(&s)) Pop(&op1, &s);
+            val = Oper(c, op1, op2);
+            // printf("%.2f %c %.2f = %.2f\n", op1, c, op2, val);
+            if (!StackFull(&s)) Push(val, &s);
+        }
+    }
+    if (!StackEmpty(&s)) Pop(&val, &s);
+    return val;
+}
 
 int main()
 {

@@ -2,17 +2,17 @@
 #define GLOBAL_H
 
 #define MAXELEMENTS 100
-typedef struct elementtype
+typedef struct customer
 {
-    int year;
-    float age;
-    int tmp;
-} ElementType;
+    int id;
+    int model_year;
+    char name[];
+} Customer;
 
-typedef int QueueEntry;
+typedef Customer QueueEntry;
 #define MAXQUEUE MAXELEMENTS
 
-typedef char StackEntry;
+typedef Customer StackEntry;
 #define MAXSTACK MAXELEMENTS
 
 #endif
