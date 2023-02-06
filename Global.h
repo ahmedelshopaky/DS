@@ -15,4 +15,7 @@ typedef Customer QueueEntry;
 typedef Customer StackEntry;
 #define MAXSTACK MAXELEMENTS
 
+typedef int ListEntry;
+#define MAXLIST MAXELEMENTS
+
 #endif
