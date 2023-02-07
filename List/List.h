@@ -1,7 +1,7 @@
 #include "../Global.h"
-#define DOUBLY_LINKED_BASED_LIST
+#define DOUBLY_LINKED_LIST
 
-#ifdef DOUBLY_LINKED_BASED_LIST
+#ifdef DOUBLY_LINKED_LIST
 typedef struct listnode
 {
     struct listnode *next, *prev;

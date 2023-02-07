@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "List.h"
 
-#ifdef DOUBLY_LINKED_BASED_LIST
+#ifdef DOUBLY_LINKED_LIST
 
 void CreateList(List *pl)
 {
@@ -48,20 +48,38 @@ int InsertList(int pos, ListEntry e, List *pl)
         temp->entry = e;
         temp->next = NULL;
         temp->prev = NULL;
+
         if (pos == 0)
         {
-            temp->next = pl->head;
-            temp->prev = pl->tail;
-            if (!pl->size)
-                pl->tail = temp;
-            else
+
+            if (pl->head)
+            {
                 pl->head->prev = pl->tail->next = temp;
-            pl->head = pl->current = temp;
+                temp->prev = pl->tail;
+                temp->next = pl->head;
+            }
+            else
+                pl->head = pl->tail = temp->next = temp->prev = temp;
+            pl->head = temp;
+            pl->current = temp;
             pl->currentpos = 0;
         }
         else
         {
-            //
+            if (pos <= pl->currentpos)
+                for (; pl->currentpos != pos - 1; pl->currentpos--)
+                    pl->current = pl->current->prev;
+            else
+                for (; pl->currentpos != pos - 1; pl->currentpos++)
+                    pl->current = pl->current->next;
+            temp->next = pl->current->next;
+            temp->prev = pl->current;
+            pl->current->next->prev = temp;
+            pl->current->next = temp;
+            pl->current = temp;
+            pl->currentpos = pos;
+            if (pos == pl->size)
+                pl->tail = temp;
         }
         pl->size++;
         return 1;
@@ -72,29 +90,81 @@ int InsertList(int pos, ListEntry e, List *pl)
 
 void DeleteList(int pos, ListEntry *e, List *pl)
 {
-    //
+    if (pos == 0)
+    {
+        pl->current = pl->head->next;
+        pl->currentpos = 0;
+        *e = pl->head->entry;
+        free(pl->head);
+        pl->head = pl->current;
+        pl->current->prev = pl->tail;
+        pl->tail->next = pl->current;
+    }
+    else if (pos == pl->size - 1)
+    {
+        pl->current = pl->tail->prev;
+        pl->currentpos = pos - 1;
+        *e = pl->tail->entry;
+        free(pl->tail);
+        pl->tail = pl->current;
+        pl->current->next = pl->head;
+        pl->head->prev = pl->current;
+    }
+    else
+    {
+        if (pos > pl->currentpos)
+            for (; pl->currentpos != pos; pl->currentpos++)
+                pl->current = pl->current->next;
+        else
+            for (; pl->currentpos != pos; pl->currentpos--)
+                pl->current = pl->current->prev;
+        free(pl->current);
+    }
+    pl->size--;
 }
 
 void RetrieveList(int pos, ListEntry *e, List *pl)
 {
-    //
+    if (pos == 0)
+        *e = pl->head->entry;
+    else if (pos == pl->size - 1)
+        *e = pl->tail->entry;
+    else
+    {
+        if (pos > pl->currentpos)
+            for (; pl->currentpos != pos; pl->currentpos++)
+                pl->current = pl->current->next;
+        else
+            for (; pl->currentpos != pos; pl->currentpos--)
+                pl->current = pl->current->prev;
+        *e = pl->current->entry;
+    }
 }
 
 void ReplaceList(int pos, ListEntry e, List *pl)
 {
-    //
+    if (pos == 0)
+        pl->head->entry = e;
+    else if (pos == pl->size - 1)
+        pl->tail->entry = e;
+    else
+    {
+        if (pos > pl->currentpos)
+            for (; pl->currentpos != pos; pl->currentpos++)
+                pl->current = pl->current->next;
+        else
+            for (; pl->currentpos != pos; pl->currentpos--)
+                pl->current = pl->current->prev;
+        pl->current->entry = e;
+    }
 }
 
 void TraverseList(List *pl, void (*pf)(ListEntry))
 {
-    pl->currentpos = 0;
-    pl->current = pl->head;
-    for (; pl->currentpos < pl->size;)
-    {
-        (*pf)(pl->current->entry);
-        pl->current = pl->current->next;
-        pl->currentpos++;
-    }
+    ListNode *temp;
+    int i;
+    for (temp = pl->head, i = 0; i < pl->size; temp = temp->next, i++)
+        (*pf)(temp->entry);
 }
 #endif
 
