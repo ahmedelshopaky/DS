@@ -14,18 +14,18 @@ void TestList()
     if (!ListFull(&l))
     {
         InsertList(0, 10, &l);
-        InsertList(1, 20, &l);
-        InsertList(2, 30, &l);
+        InsertList(0, 20, &l);
+        InsertList(0, 30, &l);
     }
     printf("list size is: %d\n", ListSize(&l));
     TraverseList(&l, &Display);
-    if (!ListEmpty(&l))
-    {
-        DeleteList(2, &e, &l);
-        printf("list entry is: %d\n", e);
-        DeleteList(0, &e, &l);
-        printf("list entry is: %d\n", e);
-    }
+    // if (!ListEmpty(&l))
+    // {
+    //     DeleteList(2, &e, &l);
+    //     printf("list entry is: %d\n", e);
+    //     DeleteList(0, &e, &l);
+    //     printf("list entry is: %d\n", e);
+    // }
     printf("list size is: %d\n", ListSize(&l));
     TraverseList(&l, &Display);
     DestroyList(&l);

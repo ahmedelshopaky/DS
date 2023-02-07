@@ -29,14 +29,14 @@ int ListEmpty(List *pl)
 
 void DestroyList(List *pl)
 {
-    while (pl->head)
+    while (pl->size)
     {
         pl->current = pl->head->next;
         free(pl->head);
         pl->head = pl->current;
+        pl->size--;
     }
-    pl->tail = NULL;
-    pl->size = 0;
+    pl->tail = pl->head = pl->current = NULL;
     pl->currentpos = 0;
 }
 
@@ -46,7 +46,24 @@ int InsertList(int pos, ListEntry e, List *pl)
     if (temp)
     {
         temp->entry = e;
-        //
+        temp->next = NULL;
+        temp->prev = NULL;
+        if (pos == 0)
+        {
+            temp->next = pl->head;
+            temp->prev = pl->tail;
+            if (!pl->size)
+                pl->tail = temp;
+            else
+                pl->head->prev = pl->tail->next = temp;
+            pl->head = pl->current = temp;
+            pl->currentpos = 0;
+        }
+        else
+        {
+            //
+        }
+        pl->size++;
         return 1;
     }
     else
@@ -70,9 +87,14 @@ void ReplaceList(int pos, ListEntry e, List *pl)
 
 void TraverseList(List *pl, void (*pf)(ListEntry))
 {
-    ListNode *p;
-    for (p = pl->head; p; p = p->next)
-        (*pf)(p->entry);
+    pl->currentpos = 0;
+    pl->current = pl->head;
+    for (; pl->currentpos < pl->size;)
+    {
+        (*pf)(pl->current->entry);
+        pl->current = pl->current->next;
+        pl->currentpos++;
+    }
 }
 #endif
 
