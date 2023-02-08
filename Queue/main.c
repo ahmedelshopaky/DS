@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "Queue.h"
 
 void Display(QueueEntry e)

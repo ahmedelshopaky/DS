@@ -1,5 +1,3 @@
-#include <math.h>
-#include <stdio.h>
 #include "Stack.h"
 
 #define POW '^'
@@ -179,7 +177,6 @@ int Precedence(char op1, char op2)
 
 /*
  * Polish Notaion.
- * ---------------
  * --- Example ---
  * - Prefix:  +ab
  * - Infix:   a+b

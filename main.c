@@ -1,8 +1,43 @@
-#include <stdio.h>
 #include "Global.h"
 #include "Stack/Stack.h"
 #include "Queue/Queue.h"
 
+/*
+ * backtracking algorithm (postponing the work):
+ * eight queens puzzle
+ */
+void EightQueensPuzzle(void)
+{
+    //
+}
+
+/*
+ * Polish Notation - Obvious Limitations:
+ * 1. only single digit integers
+ * 2. only positive integers
+ * 3. no unary operators allowed.
+ * 4. no brackets !!!
+ * 5. no handling for invalid expr.
+ *    - extra operators.
+ *    - invalid ordering
+ * 6. No characters allowed
+ * HW: rewrite it to account for as much as limitations you can!
+ * This can be your course project.
+ * Hint: read Polish Notation, Ch.12.
+ */
+void InfixToPostfix(char infix[], char postfix[])
+{
+    //
+}
+
+double EvaluatePostfix(char expr[])
+{
+    //
+}
+
+/*
+ * Sheet3: Queues
+ */
 void AddCustomer(Queue *pqueue)
 {
     QueueEntry e;

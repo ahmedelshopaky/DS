@@ -10,6 +10,6 @@ int StackFull(PStack *);
 int StackEmpty(PStack *);
 void StackTop(StackEntry *, PStack *);
 void Pop(StackEntry *, PStack *);
-int Push(StackEntry, PStack *);
-// int Push(void *, PStack *, int);
+int xPush(StackEntry, PStack *);
+int Push(void *, PStack *, int);
 void CreateStack(PStack *);

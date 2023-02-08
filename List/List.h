@@ -13,6 +13,12 @@ typedef struct list
     ListNode *current, *head, *tail;
     int size, currentpos;
 } List;
+
+// typedef struct list
+// {
+//     ListNode *current;
+//     int size, currentpos;
+// } List;
 #endif
 
 #ifdef LINKED_BASED_LIST
@@ -46,6 +52,7 @@ int ListFull(List *);
 int ListEmpty(List *);
 void DestroyList(List *);
 int InsertList(int, ListEntry, List *);
+// int InsertOrder(ListEntry, List *);
 void DeleteList(int, ListEntry *, List *);
 void RetrieveList(int, ListEntry *, List *);
 void ReplaceList(int, ListEntry, List *);

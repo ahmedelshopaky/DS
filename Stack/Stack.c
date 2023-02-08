@@ -108,7 +108,7 @@ void Pop(StackEntry *pe, PStack *pps)
  * Pre: The stack exists and is initialized
  * Post: The argument item has been stored at the top of the stack
  */
-int Push(StackEntry e, PStack *pps)
+int xPush(StackEntry e, PStack *pps)
 {
     StackNode *pn = (StackNode *)malloc(sizeof(StackNode));
     if (!pn)
@@ -121,6 +121,11 @@ int Push(StackEntry e, PStack *pps)
         (*pps)->size++;
         return 1;
     }
+}
+
+int Push(void *pe, PStack *pps, int bytes)
+{
+    //
 }
 
 void CreateStack(PStack *pps)
@@ -200,25 +205,34 @@ int StackFull(PStack *pps)
  * The user has to check before calling Push
  * Post: The element e has been stored at the top of the stack
  */
-int Push(StackEntry e, PStack *pps)
+int xPush(StackEntry e, PStack *pps)
 {
     (*pps)->entry[(*pps)->top++] = e;
     return 1;
 }
 
-// int Push(void *, PStack *pps, int bytes)
-// {
-//     void *ptr = malloc(bytes);
-//     if (!ptr)
-//         return 0;
-//     else
-//     {
-//         memcpy(ptr, pe, bytes);
-//         (*pps)->entry[(*pps)->top] = ptr;
-//         (*pps)->top++;
-//         return 1;
-//     }
-// }
+/*
+ * Push((void *)&e, &s, sizeof(e));
+ * This solution allows user for using both:
+ * 1. more than one stack with different homogeneous element type.
+ * 2. a single stack of non-homogeneous elements type.
+ * If a single type exists in the stack, Push is fine this
+ * way. However, If non-homogeneous elements exists we have
+ * to add a field of element size.
+ */
+int Push(void *pe, PStack *pps, int bytes)
+{
+    void *ptr = malloc(bytes);
+    if (!ptr)
+        return 0;
+    else
+    {
+        memcpy(ptr, pe, bytes);
+        (*pps)->entry[(*pps)->top] = ptr;
+        (*pps)->top++;
+        return 1;
+    }
+}
 
 void CreateStack(PStack *pps)
 {
